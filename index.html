@@ -195,7 +195,7 @@
     </div>
         <script>
         // ---------- КОНФИГУРАЦИЯ ----------
-        const API_BASE = 'https://render.com/docs/web-services#port-binding'; // ← ЗАМЕНИ НА СВОЙ URL
+        const API_BASE = 'https://saper-server.onrender.com'; // ← ЗАМЕНИ НА СВОЙ URL
         let currentUser = null;
         let currentLang = localStorage.getItem('saper_lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
         let isAdmin = false;
@@ -305,8 +305,6 @@
                     return;
                 }
                 container.innerHTML = posts.map(p => {
-                    const liked = DB.likes?.[currentUser?.login]?.includes(p.id);
-                    const disliked = DB.dislikes?.[currentUser?.login]?.includes(p.id);
                     const isOwner = currentUser && currentUser.login === p.user;
                     return `
                     <div class="post-card">
@@ -841,7 +839,7 @@
             }
         });
 
-        // Service Worker для PWA
+        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/saper/sw.js').catch(() => {});
