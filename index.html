@@ -2,245 +2,92 @@
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
     <title>Сапёр – Социальная сеть</title>
     <style>
         :root {
-            --bg: #0b0f15;
-            --surface: #1a1f2b;
-            --surface-light: #222836;
-            --text: #eef2f6;
-            --text-secondary: #9aa4b2;
-            --accent: #4f8cff;
-            --accent2: #7b5cff;
-            --border: #2d3440;
-            --danger: #ff4d6a;
-            --circle-size: min(80vw, 360px);
-            --gradient: linear-gradient(135deg, #4f8cff, #7b5cff);
-            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            --radius: 20px;
+            --bg: #0b0f15; --surface: #1a1f2b; --surface-light: #222836;
+            --text: #eef2f6; --text-secondary: #9aa4b2; --accent: #4f8cff;
+            --accent2: #7b5cff; --border: #2d3440; --danger: #ff4d6a;
+            --circle-size: min(80vw, 360px); --gradient: linear-gradient(135deg, #4f8cff, #7b5cff);
+            --card-shadow: 0 8px 20px rgba(0,0,0,0.3); --radius: 20px;
         }
         .light {
-            --bg: #f4f6fa;
-            --surface: #ffffff;
-            --surface-light: #f0f2f7;
-            --text: #1a1f2b;
-            --text-secondary: #5f6b7a;
-            --accent: #2d6bc4;
-            --accent2: #5e3fd7;
-            --border: #e2e5eb;
-            --danger: #d93848;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --bg: #f4f6fa; --surface: #ffffff; --surface-light: #f0f2f7;
+            --text: #1a1f2b; --text-secondary: #5f6b7a; --accent: #2d6bc4;
+            --accent2: #5e3fd7; --border: #e2e5eb; --danger: #d93848;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
-        }
-        button, input, textarea, select { font-family: inherit; font-size: 16px; }
-        button:active { transform: scale(0.97); }
-        button { cursor: pointer; border: none; background: none; color: inherit; transition: transform 0.1s; }
-        .hidden { display: none !important; }
-
-        .screen {
-            position: fixed; inset: 0; background: var(--bg);
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; padding: 20px; overflow-y: auto;
-        }
-        .screen.active { display: flex; }
-        #app { display: none; height: 100vh; width: 100%; background: var(--bg); }
-        #app.active { display: flex; }
-
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 16px;
-        }
-        .input-wrapper .icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            color: var(--text-secondary);
-        }
-        .input-wrapper input, .input-wrapper textarea {
-            width: 100%;
-            padding: 16px 16px 16px 48px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            color: var(--text);
-            font-size: 16px;
-            outline: none;
-            transition: border 0.2s, box-shadow 0.2s;
-        }
-        .input-wrapper input:focus, .input-wrapper textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.2);
-        }
-        .auth-btn {
-            width: 100%;
-            max-width: 320px;
-            padding: 16px;
-            border-radius: 14px;
-            margin: 8px 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-weight: 500;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        .auth-btn.primary {
-            background: var(--gradient);
-            color: white;
-            border: none;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(79, 140, 255, 0.3);
-        }
-        .auth-btn.primary:hover { box-shadow: 0 6px 16px rgba(79, 140, 255, 0.4); }
-        .auth-link {
-            color: var(--accent);
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            margin-top: 12px;
-        }
-
-        .onb-slides {
-            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
-            gap: 12px; max-width: 320px; margin-bottom: 24px;
-        }
-        .onb-slide {
-            min-width: 100%; scroll-snap-align: start;
-            background: var(--surface); border-radius: 20px;
-            padding: 32px 20px; text-align: center; font-weight: 600;
-            box-shadow: var(--card-shadow);
-        }
-
-        #sidebar {
-            width: 260px; background: var(--surface); display: flex;
-            flex-direction: column; padding: 24px 0;
-            border-right: 1px solid var(--border);
-        }
-        .logo {
-            font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 32px;
-            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            cursor: pointer;
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 14px; padding: 14px 24px;
-            cursor: pointer; font-weight: 500;
-        }
-        .nav-item:hover, .nav-item.active {
-            background: var(--surface-light); border-radius: 12px; margin: 0 10px;
-        }
-
-        .tab-content { flex: 1; overflow-y: auto; padding: 20px; display: none; }
-        .tab-content.active { display: block; }
-
-        .post-card {
-            background: var(--surface); border-radius: var(--radius); padding: 20px;
-            margin-bottom: 16px; border: 1px solid var(--border);
-            max-width: 600px; margin-inline: auto; box-shadow: var(--card-shadow);
-        }
-        .post-header {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
-        }
-        .avatar {
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--gradient); display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 20px;
-        }
-        .post-text { margin: 12px 0; line-height: 1.6; }
-        .post-media { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
-        .post-media img, .post-media video {
-            width: 130px; height: 130px; object-fit: cover; border-radius: 12px;
-        }
-        .post-actions {
-            display: flex; align-items: center; gap: 24px; color: var(--text-secondary);
-            margin-top: 14px; font-size: 15px;
-        }
-        .action-btn { cursor: pointer; transition: color 0.2s; }
-        .action-btn:hover { color: var(--accent); }
-
-        .comments-section {
-            margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px;
-        }
-        .comment { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; padding: 6px 0; }
-        .comment-input { display: flex; gap: 8px; margin-top: 12px; }
-        .comment-input input {
-            flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
-            background: var(--bg); color: var(--text);
-        }
-
-        #kruzhki-feed { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
-        .kruzhok-slide {
-            scroll-snap-align: start; display: flex; align-items: center; justify-content: center;
-            height: 100vh; position: relative; flex-direction: column;
-        }
-        .circle-container {
-            position: relative; width: var(--circle-size); height: var(--circle-size);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .progress-ring { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
-        .progress-ring circle { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 4; }
-        .progress-ring .progress { stroke: var(--accent); }
-        .video-circle {
-            width: 88%; height: 88%; border-radius: 50%; overflow: hidden;
-            box-shadow: 0 0 30px rgba(79,140,255,0.3);
-        }
-        .video-circle video { width: 100%; height: 100%; object-fit: cover; }
-        .right-actions {
-            position: absolute; right: -48px; top: 50%; transform: translateY(-50%);
-            display: flex; flex-direction: column; gap: 28px; color: white; font-size: 26px;
-        }
-        .right-actions .action-icon { cursor: pointer; transition: transform 0.1s; }
-        .right-actions .action-icon:active { transform: scale(0.8); }
-        .author-info {
-            position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); padding: 8px 24px;
-            border-radius: 30px; color: white; font-weight: 500;
-        }
-        .kruzhok-comments {
-            position: absolute; bottom: 80px; left: 16px; right: 16px;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-radius: 20px;
-            padding: 14px; max-height: 180px; overflow-y: auto; color: white;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter', system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--text); height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        button, input, textarea, select { font-family:inherit; font-size:16px; }
+        button:active { transform:scale(0.97); }
+        button { cursor:pointer; border:none; background:none; color:inherit; transition:transform 0.1s; }
+        .hidden { display:none !important; }
+        .screen { position:fixed; inset:0; background:var(--bg); display:none; flex-direction:column; align-items:center; justify-content:center; z-index:100; padding:20px; overflow-y:auto; }
+        .screen.active { display:flex; }
+        #app { display:none; height:100vh; width:100%; background:var(--bg); }
+        #app.active { display:flex; }
+        .input-wrapper { position:relative; width:100%; max-width:320px; margin-bottom:16px; }
+        .input-wrapper .icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--text-secondary); }
+        .input-wrapper input, .input-wrapper textarea { width:100%; padding:16px 16px 16px 48px; background:var(--surface); border:1px solid var(--border); border-radius:14px; color:var(--text); font-size:16px; outline:none; transition:border 0.2s, box-shadow 0.2s; }
+        .input-wrapper input:focus, .input-wrapper textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(79,140,255,0.2); }
+        .auth-btn { width:100%; max-width:320px; padding:16px; border-radius:14px; margin:8px 0; background:var(--surface); border:1px solid var(--border); color:var(--text); font-weight:500; transition:background 0.2s; }
+        .auth-btn.primary { background:var(--gradient); color:white; border:none; font-weight:600; box-shadow:0 4px 12px rgba(79,140,255,0.3); }
+        .auth-btn.primary:hover { box-shadow:0 6px 16px rgba(79,140,255,0.4); }
+        .auth-link { color:var(--accent); cursor:pointer; text-decoration:none; font-weight:500; margin-top:12px; }
+        .onb-slides { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:12px; max-width:320px; margin-bottom:24px; }
+        .onb-slide { min-width:100%; scroll-snap-align:start; background:var(--surface); border-radius:20px; padding:32px 20px; text-align:center; font-weight:600; box-shadow:var(--card-shadow); }
+        #sidebar { width:260px; background:var(--surface); display:flex; flex-direction:column; padding:24px 0; border-right:1px solid var(--border); }
+        .logo { font-size:28px; font-weight:700; text-align:center; margin-bottom:32px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; cursor:pointer; }
+        .nav-item { display:flex; align-items:center; gap:14px; padding:14px 24px; cursor:pointer; font-weight:500; }
+        .nav-item:hover, .nav-item.active { background:var(--surface-light); border-radius:12px; margin:0 10px; }
+        .tab-content { flex:1; overflow-y:auto; padding:20px; display:none; }
+        .tab-content.active { display:block; }
+        .post-card { background:var(--surface); border-radius:var(--radius); padding:20px; margin-bottom:16px; border:1px solid var(--border); max-width:600px; margin-inline:auto; box-shadow:var(--card-shadow); }
+        .post-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+        .avatar { width:44px; height:44px; border-radius:50%; background:var(--gradient); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:20px; overflow:hidden; }
+        .avatar img { width:100%; height:100%; object-fit:cover; }
+        .post-text { margin:12px 0; line-height:1.6; }
+        .post-media { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+        .post-media img, .post-media video { width:130px; height:130px; object-fit:cover; border-radius:12px; }
+        .post-actions { display:flex; align-items:center; gap:24px; color:var(--text-secondary); margin-top:14px; font-size:15px; }
+        .action-btn { cursor:pointer; transition:color 0.2s; }
+        .action-btn:hover { color:var(--accent); }
+        .comments-section { margin-top:18px; border-top:1px solid var(--border); padding-top:14px; }
+        .comment { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; padding:6px 0; }
+        .comment-input { display:flex; gap:8px; margin-top:12px; }
+        .comment-input input { flex:1; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text); }
+        #kruzhki-feed { height:100%; overflow-y:scroll; scroll-snap-type:y mandatory; background:#000; }
+        .kruzhok-slide { scroll-snap-align:start; display:flex; align-items:center; justify-content:center; height:100vh; position:relative; flex-direction:column; }
+        .circle-container { position:relative; width:var(--circle-size); height:var(--circle-size); display:flex; align-items:center; justify-content:center; }
+        .progress-ring { position:absolute; width:100%; height:100%; transform:rotate(-90deg); }
+        .progress-ring circle { fill:none; stroke:rgba(255,255,255,0.2); stroke-width:4; }
+        .progress-ring .progress { stroke:var(--accent); }
+        .video-circle { width:88%; height:88%; border-radius:50%; overflow:hidden; box-shadow:0 0 30px rgba(79,140,255,0.3); }
+        .video-circle video { width:100%; height:100%; object-fit:cover; }
+        .right-actions { position:absolute; right:-48px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:28px; color:white; font-size:26px; }
+        .right-actions .action-icon { cursor:pointer; transition:transform 0.1s; }
+        .right-actions .action-icon:active { transform:scale(0.8); }
+        .author-info { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.75); backdrop-filter:blur(10px); padding:8px 24px; border-radius:30px; color:white; font-weight:500; }
+        .kruzhok-comments { position:absolute; bottom:80px; left:16px; right:16px; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); border-radius:20px; padding:14px; max-height:180px; overflow-y:auto; color:white; }
+        .empty-placeholder { text-align:center; padding:40px; color:var(--text-secondary); }
         @media (max-width: 768px) {
-            #sidebar { display: none; }
-            #bottom-nav {
-                display: flex; position: fixed; bottom: 0; width: 100%;
-                background: var(--surface); border-top: 1px solid var(--border); z-index: 50;
-                backdrop-filter: blur(20px);
-            }
-            .mobile-nav-item { flex: 1; text-align: center; padding: 12px; font-size: 22px; cursor: pointer; }
-            .post-card { margin: 10px; }
-            .right-actions { right: -32px; gap: 20px; font-size: 22px; }
+            #sidebar { display:none; }
+            #bottom-nav { display:flex; position:fixed; bottom:0; width:100%; background:var(--surface); border-top:1px solid var(--border); z-index:50; backdrop-filter:blur(20px); }
+            .mobile-nav-item { flex:1; text-align:center; padding:12px; font-size:22px; cursor:pointer; }
+            .post-card { margin:10px; }
+            .right-actions { right:-32px; gap:20px; font-size:22px; }
         }
         @media (min-width: 769px) {
-            #bottom-nav { display: none; }
+            #bottom-nav { display:none; }
         }
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-            display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px;
-        }
-        .modal-content {
-            background: var(--surface); border-radius: 20px; padding: 24px;
-            max-height: 80vh; overflow-y: auto; color: var(--text); max-width: 500px; width: 100%;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
+        .modal { position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:200; padding:20px; }
+        .modal-content { background:var(--surface); border-radius:20px; padding:24px; max-height:80vh; overflow-y:auto; color:var(--text); max-width:500px; width:100%; box-shadow:0 20px 40px rgba(0,0,0,0.4); }
     </style>
 </head>
 <body class="dark">
+    <!-- Экран авторизации -->
     <div id="auth-screen" class="screen active">
         <div style="margin-bottom:24px;">
             <select id="lang-select-auth" style="padding:8px 12px; border-radius:10px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
@@ -255,58 +102,69 @@
         <span class="auth-link" id="show-policy">Политика конфиденциальности</span>
     </div>
 
+    <!-- Форма входа -->
     <div id="login-screen" class="screen">
         <h2 style="margin-bottom:24px; font-size:28px;">Вход</h2>
         <div class="input-wrapper"><span class="icon">👤</span><input type="text" id="login-login" placeholder="Логин"></div>
         <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="login-pass" placeholder="Пароль"></div>
-        <button class="auth-btn primary" id="login-submit" style="margin-top:8px;">Войти</button>
-        <button class="auth-btn" id="back-to-auth" style="margin-top:12px;">Назад</button>
+        <button class="auth-btn primary" id="login-submit">Войти</button>
+        <button class="auth-btn" id="back-to-auth">Назад</button>
     </div>
 
+    <!-- Онбординг -->
     <div id="onboarding-screen" class="screen">
-        <h3 style="margin-bottom:16px;">Что такое Сапёр?</h3>
+        <h3>Что такое Сапёр?</h3>
         <div class="onb-slides">
             <div class="onb-slide">📝 Текстовые посты</div>
             <div class="onb-slide">🎥 Кружочки с вертикальным скроллом</div>
             <div class="onb-slide">📸 Загружай фото и видео</div>
             <div class="onb-slide">🌐 Темы и языки</div>
-            <div class="onb-slide">🔒 Конфиденциальность</div>
+            <div class="onb-slide">💬 Личные сообщения</div>
         </div>
-        <button class="auth-btn primary" id="open-register-form">Продолжить регистрацию</button>
+        <button class="auth-btn primary" id="open-register-form">Продолжить</button>
     </div>
 
+    <!-- Регистрация -->
     <div id="register-screen" class="screen">
         <h2 style="margin-bottom:24px; font-size:28px;">Регистрация</h2>
         <div class="input-wrapper"><span class="icon">✏️</span><input type="text" id="reg-name" placeholder="Имя"></div>
         <div class="input-wrapper"><span class="icon">👤</span><input type="text" id="reg-login" placeholder="Логин"></div>
+        <div class="input-wrapper"><span class="icon">📧</span><input type="email" id="reg-email" placeholder="Email (gmail.com, mail.ru и др.)"></div>
         <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="reg-pass" placeholder="Пароль"></div>
         <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="reg-pass2" placeholder="Повторите пароль"></div>
         <p id="reg-error" style="color:var(--danger);display:none;margin-bottom:12px;">Пароли не совпадают</p>
         <button class="auth-btn primary" id="register-submit">Зарегистрироваться</button>
-        <button class="auth-btn" id="back-to-auth2" style="margin-top:12px;">Назад</button>
+        <button class="auth-btn" id="back-to-auth2">Назад</button>
     </div>
 
+    <!-- Редактирование профиля -->
     <div id="profile-edit-screen" class="screen">
-        <h2 style="margin-bottom:20px;">Заполните профиль</h2>
-        <div class="profile-edit-avatar" id="avatar-choices"></div>
+        <h2>Заполните профиль</h2>
+        <div id="avatar-choices" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:16px 0;"></div>
+        <div class="input-wrapper"><span class="icon">📷</span><input type="file" id="avatar-file" accept="image/*" style="padding-left:48px;"></div>
         <div class="input-wrapper"><span class="icon">✏️</span><input type="text" id="profile-name" placeholder="Имя"></div>
         <div class="input-wrapper"><span class="icon">📝</span><textarea id="profile-desc" placeholder="О себе" style="height:80px; resize:none;"></textarea></div>
         <button class="auth-btn primary" id="save-profile">Сохранить</button>
     </div>
 
+    <!-- Основное приложение -->
     <div id="app">
         <div id="sidebar">
             <div class="logo" id="logo">⚡ Сапёр</div>
-            <div class="nav-item active" data-tab="posts">📝 <span data-i18n="postsTab">Посты</span></div>
-            <div class="nav-item" data-tab="kruzhki">🔴 <span data-i18n="kruzhkiTab">Кружочки</span></div>
-            <div class="nav-item" data-tab="creator">➕ <span data-i18n="createTab">Создать</span></div>
-            <div class="nav-item" data-tab="profile">👤 <span data-i18n="profileTab">Профиль</span></div>
-            <div class="nav-item" data-tab="settings">⚙️ <span data-i18n="settingsTab">Настройки</span></div>
+            <div class="nav-item active" data-tab="posts">📝 <span>Посты</span></div>
+            <div class="nav-item" data-tab="kruzhki">🔴 <span>Кружочки</span></div>
+            <div class="nav-item" data-tab="creator">➕ <span>Создать</span></div>
+            <div class="nav-item" data-tab="notifications">🔔 <span>Уведомления</span></div>
+            <div class="nav-item" data-tab="messages">💬 <span>Сообщения</span></div>
+            <div class="nav-item" data-tab="profile">👤 <span>Профиль</span></div>
+            <div class="nav-item" data-tab="settings">⚙️ <span>Настройки</span></div>
         </div>
         <div style="flex:1; display:flex; flex-direction:column;">
             <div class="tab-content active" id="tab-posts"></div>
             <div class="tab-content" id="tab-kruzhki"><div id="kruzhki-feed"></div></div>
             <div class="tab-content" id="tab-creator"><div id="creator-menu"></div></div>
+            <div class="tab-content" id="tab-notifications"><div id="notifications-list"></div></div>
+            <div class="tab-content" id="tab-messages"><div id="messages-container"></div></div>
             <div class="tab-content" id="tab-profile"></div>
             <div class="tab-content" id="tab-settings"></div>
         </div>
@@ -314,45 +172,61 @@
             <div class="mobile-nav-item active" data-tab="posts">📝</div>
             <div class="mobile-nav-item" data-tab="kruzhki">🔴</div>
             <div class="mobile-nav-item" data-tab="creator">➕</div>
+            <div class="mobile-nav-item" data-tab="notifications">🔔</div>
+            <div class="mobile-nav-item" data-tab="messages">💬</div>
             <div class="mobile-nav-item" data-tab="profile">👤</div>
-            <div class="mobile-nav-item" data-tab="settings">⚙️</div>
         </div>
     </div>
 
+    <!-- Политика -->
     <div id="policy-modal" class="modal hidden">
         <div class="modal-content">
-            <h3>Политика конфиденциальности «Сапёр»</h3>
-            <p>Ваши данные защищены и не передаются третьим лицам. Подробнее...</p>
+            <h3>Политика конфиденциальности</h3>
+            <p>Ваши данные защищены...</p>
             <button class="auth-btn" id="close-policy">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Админ-панель -->
+    <div id="admin-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Панель администратора</h3>
+            <div id="admin-stats"></div>
+            <label><input type="checkbox" id="admin-delete-mode"> Режим удаления</label>
+            <button class="auth-btn" id="close-admin">Закрыть</button>
         </div>
     </div>
 
     <script>
         // ---------- КОНФИГУРАЦИЯ ----------
-        const API_BASE = 'https://saper-server.onrender.com'; // ← ЗАМЕНИ НА СВОЙ RENDER URL
+        const API_BASE = 'https://YOUR_RENDER_SERVER.onrender.com'; // ← ЗАМЕНИ
         let currentUser = null;
         let currentLang = localStorage.getItem('saper_lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
+        let isAdmin = false;
+        let deleteMode = false;
 
         const i18n = {
             ru: {
-                loginBtn: 'Войти', registerBtn: 'Зарегистрироваться', back: 'Назад',
-                privacyPolicy: 'Политика конфиденциальности', loginTitle: 'Вход',
-                registerTitle: 'Регистрация', onboardingTitle: 'Что такое Сапёр?', continue: 'Продолжить',
-                editProfile: 'Заполните профиль', save: 'Сохранить',
-                postsTab: 'Посты', kruzhkiTab: 'Кружочки', createTab: 'Создать', profileTab: 'Профиль', settingsTab: 'Настройки',
-                subscribe: 'Подписаться', unsubscribe: 'Отписаться',
-                comment: 'Комментарий', writeComment: 'Написать комментарий...',
-                deleteConfirm: 'Удалить?', lang: 'Язык', theme: 'Тема', deleteAccount: 'Удалить аккаунт', logout: 'Выйти'
+                postsTab: 'Посты', kruzhkiTab: 'Кружочки', createTab: 'Создать',
+                profileTab: 'Профиль', settingsTab: 'Настройки', subscribe: 'Подписаться',
+                unsubscribe: 'Отписаться', comment: 'Комментарий', writeComment: 'Написать...',
+                deleteConfirm: 'Удалить?', lang: 'Язык', theme: 'Тема', logout: 'Выйти',
+                emptyPosts: 'Пока нет постов', emptyKruzhki: 'Пока нет кружочков',
+                emptyNotifications: 'Нет уведомлений', emptyMessages: 'Нет сообщений',
+                mutualOnly: 'Только взаимные подписчики могут писать',
+                sendMessage: 'Отправить',
+                shareToFriend: 'Поделиться с другом'
             },
             en: {
-                loginBtn: 'Login', registerBtn: 'Register', back: 'Back',
-                privacyPolicy: 'Privacy Policy', loginTitle: 'Login',
-                registerTitle: 'Register', onboardingTitle: 'What is Sapper?', continue: 'Continue',
-                editProfile: 'Edit Profile', save: 'Save',
-                postsTab: 'Posts', kruzhkiTab: 'Circles', createTab: 'Create', profileTab: 'Profile', settingsTab: 'Settings',
-                subscribe: 'Subscribe', unsubscribe: 'Unsubscribe',
-                comment: 'Comment', writeComment: 'Write a comment...',
-                deleteConfirm: 'Delete?', lang: 'Language', theme: 'Theme', deleteAccount: 'Delete account', logout: 'Log out'
+                postsTab: 'Posts', kruzhkiTab: 'Circles', createTab: 'Create',
+                profileTab: 'Profile', settingsTab: 'Settings', subscribe: 'Subscribe',
+                unsubscribe: 'Unsubscribe', comment: 'Comment', writeComment: 'Write...',
+                deleteConfirm: 'Delete?', lang: 'Language', theme: 'Theme', logout: 'Log out',
+                emptyPosts: 'No posts yet', emptyKruzhki: 'No circles yet',
+                emptyNotifications: 'No notifications', emptyMessages: 'No messages',
+                mutualOnly: 'Only mutual subscribers can message',
+                sendMessage: 'Send',
+                shareToFriend: 'Share with friend'
             }
         };
 
@@ -360,39 +234,43 @@
         function setLang(lang) {
             currentLang = lang;
             localStorage.setItem('saper_lang', lang);
-            document.documentElement.lang = lang;
             document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
         }
 
         document.getElementById('lang-select-auth').value = currentLang;
         document.getElementById('lang-select-auth').addEventListener('change', e => setLang(e.target.value));
 
+        // API
         async function api(path, options = {}) {
             const res = await fetch(API_BASE + path, {
                 headers: { 'Content-Type': 'application/json' },
                 ...options
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Request failed');
+            if (!res.ok) throw new Error(data.error || 'Ошибка');
             return data;
         }
         async function uploadFile(path, formData) {
             const res = await fetch(API_BASE + path, { method: 'POST', body: formData });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Upload failed');
+            if (!res.ok) throw new Error(data.error || 'Ошибка загрузки');
             return data;
         }
 
+        // Экраны
         function showScreen(id) {
             document.querySelectorAll('.screen, #app').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
+
         function login(user) {
             currentUser = user;
             localStorage.setItem('saper_user', user.login);
             showScreen('app');
             switchTab('posts');
+            if (user.role === 'admin') isAdmin = true;
         }
+
         function logout() {
             currentUser = null;
             localStorage.removeItem('saper_user');
@@ -401,87 +279,128 @@
 
         let activeTab = 'posts';
         function switchTab(tab) {
-            if (!document.getElementById(`tab-${tab}`)) return;
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.add('active');
+            const tabEl = document.getElementById(`tab-${tab}`);
+            if (tabEl) tabEl.classList.add('active');
             document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll(`[data-tab="${tab}"]`).forEach(el => el.classList.add('active'));
             activeTab = tab;
-            if (tab === 'posts') loadAndRenderPosts();
-            if (tab === 'kruzhki') loadAndRenderKruzhki();
+            if (tab === 'posts') loadPosts();
+            if (tab === 'kruzhki') loadKruzhki();
+            if (tab === 'creator') renderCreator();
+            if (tab === 'notifications') loadNotifications();
+            if (tab === 'messages') loadMessages();
             if (tab === 'profile') renderProfile();
             if (tab === 'settings') renderSettings();
-            if (tab === 'creator') renderCreatorMenu();
         }
 
-        document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(item => {
-            item.addEventListener('click', () => switchTab(item.dataset.tab));
+        // Навигация
+        document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(el => {
+            el.addEventListener('click', () => switchTab(el.dataset.tab));
         });
 
-        let mySubscriptions = [];
-        async function loadSubscriptions() {
-            if (!currentUser) return;
-            mySubscriptions = await api('/api/subscriptions/' + currentUser.login);
-        }
-        function isSubscribed(target) { return mySubscriptions.includes(target); }
-        window.toggleSubscribe = async function(target) {
-            if (!currentUser) return;
-            const sub = isSubscribed(target);
-            await api(sub ? '/api/unsubscribe' : '/api/subscribe', { method: 'POST', body: JSON.stringify({ subscriber: currentUser.login, target }) });
-            await loadSubscriptions();
-            loadAndRenderPosts();
-            loadAndRenderKruzhki();
-            if (activeTab === 'profile') renderProfile();
-        };
-
-        async function loadAndRenderPosts() {
-            await loadSubscriptions();
-            const posts = await api('/api/posts');
+        // Загрузка постов
+        async function loadPosts() {
             const container = document.getElementById('tab-posts');
-            container.innerHTML = posts.map(p => {
-                const date = new Date(p.createdAt).toLocaleString(currentLang === 'ru' ? 'ru' : 'en');
-                return `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="avatar">${p.author?.avatar || '?'}</div>
-                        <div><strong>${p.author?.name || p.user}</strong> @${p.user}<br><small>${date}</small></div>
-                        ${(currentUser && currentUser.login !== p.user) ? `<button onclick="toggleSubscribe('${p.user}')" class="auth-btn primary" style="width:auto; padding:6px 14px; font-size:13px; border-radius:20px;">${isSubscribed(p.user) ? t('unsubscribe') : t('subscribe')}</button>` : ''}
-                    </div>
-                    <div class="post-text">${p.text}</div>
-                    ${(p.images?.length || p.videoUrls?.length) ? `<div class="post-media">${(p.images||[]).map(i => `<img src="${API_BASE+i}" onerror="this.style.display='none'">`).join('')}${(p.videoUrls||[]).map(v => `<video src="${v}" controls width="130"></video>`).join('')}</div>` : ''}
-                    <div class="post-actions">
-                        <span class="action-btn" onclick="likePost('${p.id}')">👍 ${p.likes}</span>
-                        <span class="action-btn" onclick="dislikePost('${p.id}')">👎 ${p.dislikes}</span>
-                        <span class="action-btn" onclick="sharePost('${p.id}')">🔁</span>
-                        <span class="action-btn" onclick="toggleComments('post','${p.id}')">💬</span>
-                        ${currentUser?.login === p.user ? `<span class="action-btn" onclick="deletePost('${p.id}')" style="color:var(--danger)">🗑️</span>` : ''}
-                    </div>
-                    <div class="comments-section" id="comments-post-${p.id}" style="display:none;"></div>
-                </div>`;
-            }).join('');
-            setLang(currentLang);
+            try {
+                const posts = await api('/api/posts');
+                if (!posts.length) {
+                    container.innerHTML = `<div class="empty-placeholder">${t('emptyPosts')}</div>`;
+                    return;
+                }
+                container.innerHTML = posts.map(p => {
+                    const liked = p.likes > 0;
+                    const disliked = p.dislikes > 0;
+                    const isOwner = currentUser && currentUser.login === p.user;
+                    return `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="avatar">${p.author?.avatar?.startsWith('/uploads') ? `<img src="${API_BASE+p.author.avatar}">` : p.author?.avatar || '?'}</div>
+                            <div><strong>${p.author?.name || p.user}</strong> @${p.user}</div>
+                            ${currentUser && currentUser.login !== p.user ? `<button onclick="toggleSubscribe('${p.user}')" class="auth-btn primary" style="width:auto;padding:4px 10px;">${isSubscribed(p.user) ? t('unsubscribe') : t('subscribe')}</button>` : ''}
+                        </div>
+                        <div class="post-text">${p.text}</div>
+                        ${p.images?.length ? `<div class="post-media">${p.images.map(i => `<img src="${API_BASE+i}" onerror="this.style.display='none'">`).join('')}</div>` : ''}
+                        ${p.videoUrls?.length ? `<div class="post-media">${p.videoUrls.map(v => `<video src="${v}" controls width="130"></video>`).join('')}</div>` : ''}
+                        <div class="post-actions">
+                            <span class="action-btn" onclick="toggleLike('${p.id}')">👍 ${p.likes}</span>
+                            <span class="action-btn" onclick="toggleDislike('${p.id}')">👎 ${p.dislikes}</span>
+                            <span class="action-btn" onclick="sharePost('${p.id}')">🔁</span>
+                            <span class="action-btn" onclick="toggleComments('post','${p.id}')">💬</span>
+                            ${currentUser ? `<span class="action-btn" onclick="shareToFriend('${p.id}')">✉️</span>` : ''}
+                            ${(isOwner || isAdmin) ? `<span class="action-btn" onclick="deletePost('${p.id}')">🗑️</span>` : ''}
+                        </div>
+                        <div class="comments-section" id="comments-post-${p.id}" style="display:none;"></div>
+                    </div>`;
+                }).join('');
+            } catch(e) { container.innerHTML = `<div class="empty-placeholder">Ошибка загрузки</div>`; }
         }
 
-        window.likePost = async (id) => {
-            try { await api('/api/posts/' + id + '/like', { method: 'POST' }); } catch(e) { alert('Ошибка: ' + e.message); }
-            loadAndRenderPosts();
+        window.toggleLike = async (id) => {
+            await api(`/api/posts/${id}/toggle-like`, { method: 'POST', body: JSON.stringify({ userId: currentUser.login }) });
+            loadPosts();
         };
-        window.dislikePost = async (id) => {
-            try { await api('/api/posts/' + id + '/dislike', { method: 'POST' }); } catch(e) { alert('Ошибка: ' + e.message); }
-            loadAndRenderPosts();
+        window.toggleDislike = async (id) => {
+            await api(`/api/posts/${id}/toggle-dislike`, { method: 'POST', body: JSON.stringify({ userId: currentUser.login }) });
+            loadPosts();
         };
-        window.sharePost = (id) => { navigator.clipboard.writeText(location.origin + '/post/' + id).then(() => alert('Ссылка скопирована!')); };
-        window.deletePost = async (id) => { if (confirm(t('deleteConfirm'))) { await api('/api/posts/' + id, { method: 'DELETE' }); loadAndRenderPosts(); } };
+        window.sharePost = (id) => {
+            navigator.clipboard.writeText(`${location.origin}/post/${id}`).then(() => alert('Ссылка скопирована'));
+        };
+        window.deletePost = async (id) => {
+            if (!confirm(t('deleteConfirm'))) return;
+            await api(`/api/posts/${id}`, { method: 'DELETE', body: JSON.stringify({ userId: currentUser?.login, isAdmin }) });
+            loadPosts();
+        };
+        window.shareToFriend = (postId) => {
+            // открыть модалку со списком друзей (взаимных подписок) и отправить пост в ЛС
+            loadFriends().then(friends => {
+                if (!friends.length) return alert('Нет друзей для отправки');
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <h3>Отправить пост другу</h3>
+                        ${friends.map(f => `<button class="auth-btn" onclick="sendPostToFriend('${f}','${postId}')">${f}</button>`).join('')}
+                        <button class="auth-btn" onclick="this.closest('.modal').remove()">Отмена</button>
+                    </div>`;
+                document.body.appendChild(modal);
+            });
+        };
+        async function loadFriends() {
+            const subs = await api(`/api/subscriptions/${currentUser.login}`);
+            const mutual = [];
+            for (const target of subs) {
+                const check = await api(`/api/mutual/${currentUser.login}/${target}`);
+                if (check.mutual) mutual.push(target);
+            }
+            return mutual;
+        }
+        window.sendPostToFriend = async (friendLogin, postId) => {
+            const post = (await api('/api/posts')).find(p => p.id === postId);
+            if (!post) return;
+            const text = `Посмотри этот пост: ${location.origin}/post/${postId}`;
+            await api('/api/messages', { method: 'POST', body: JSON.stringify({ from: currentUser.login, to: friendLogin, text }) });
+            document.querySelector('.modal')?.remove();
+            alert('Отправлено!');
+        };
 
+        // Комментарии
         window.toggleComments = async (type, parentId) => {
             const container = document.getElementById(`comments-${type}-${parentId}`);
             if (!container) return;
             if (container.style.display === 'none' || !container.style.display) {
                 const comments = await api(`/api/comments/${type}/${parentId}`);
                 container.innerHTML = comments.map(c => `
-                    <div class="comment"><div><strong>${c.user}</strong> ${c.text}</div>${currentUser?.login === c.user ? `<span onclick="deleteComment('${c.id}','${type}','${parentId}')" style="cursor:pointer; color:var(--danger)">✕</span>` : ''}</div>
+                    <div class="comment">
+                        <div><strong>${c.user}</strong> ${c.text}</div>
+                        ${currentUser?.login === c.user ? `<span onclick="deleteComment('${c.id}','${type}','${parentId}')" style="cursor:pointer; color:var(--danger)">✕</span>` : ''}
+                    </div>
                 `).join('') + `
-                <div class="comment-input"><input type="text" id="comment-input-${type}-${parentId}" placeholder="${t('writeComment')}"><button onclick="addComment('${type}','${parentId}')" class="auth-btn primary" style="width:48px;height:48px;border-radius:14px;">➤</button></div>`;
+                <div class="comment-input">
+                    <input type="text" id="comment-input-${type}-${parentId}" placeholder="${t('writeComment')}">
+                    <button onclick="addComment('${type}','${parentId}')" class="auth-btn primary" style="width:48px;height:48px;">➤</button>
+                </div>`;
                 container.style.display = 'block';
             } else container.style.display = 'none';
         };
@@ -491,48 +410,45 @@
             if (!text || !currentUser) return;
             await api('/api/comments', { method: 'POST', body: JSON.stringify({ type, parentId, user: currentUser.login, text }) });
             input.value = '';
-            toggleComments(type, parentId);
+            window.toggleComments(type, parentId);
         };
         window.deleteComment = async (id, type, parentId) => {
             if (confirm(t('deleteConfirm'))) {
-                await api('/api/comments/' + id, { method: 'DELETE' });
-                toggleComments(type, parentId);
+                await api(`/api/comments/${id}`, { method: 'DELETE' });
+                window.toggleComments(type, parentId);
             }
         };
 
-        // Кружочки – исправленная версия
-        async function loadAndRenderKruzhki() {
-            const kruzhki = await api('/api/kruzhki');
+        // Кружочки
+        async function loadKruzhki() {
             const feed = document.getElementById('kruzhki-feed');
-            feed.innerHTML = kruzhki.map(k => `
-                <div class="kruzhok-slide">
-                    <div class="circle-container">
-                        <svg class="progress-ring" viewBox="0 0 100 100">
-                            <circle cx="50" cy="50" r="46" pathLength="1000"/>
-                            <circle class="progress" cx="50" cy="50" r="46" pathLength="1000"/>
-                        </svg>
-                        <div class="video-circle"><video src="${API_BASE + k.src}" loop playsinline muted></video></div>
-                        <div class="right-actions">
-                            <span class="action-icon" onclick="likeKruzhok('${k.id}')">❤️</span>
-                            <span class="action-icon" onclick="shareKruzhok('${k.id}')">🔁</span>
-                            <span class="action-icon" onclick="toggleComments('kruzhok','${k.id}')">💬</span>
-                            ${currentUser?.login === k.author ? `<span class="action-icon" onclick="deleteKruzhok('${k.id}')" style="color:var(--danger)">🗑️</span>` : ''}
+            try {
+                const kruzhki = await api('/api/kruzhki');
+                if (!kruzhki.length) {
+                    feed.innerHTML = `<div class="empty-placeholder" style="color:white;">${t('emptyKruzhki')}</div>`;
+                    return;
+                }
+                feed.innerHTML = kruzhki.map(k => `
+                    <div class="kruzhok-slide">
+                        <div class="circle-container">
+                            <svg class="progress-ring" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="46" pathLength="1000"/>
+                                <circle class="progress" cx="50" cy="50" r="46" pathLength="1000"/>
+                            </svg>
+                            <div class="video-circle"><video src="${API_BASE + k.src}" loop playsinline muted></video></div>
+                            <div class="right-actions">
+                                <span class="action-icon">❤️</span>
+                                <span class="action-icon" onclick="shareKruzhok('${k.id}')">🔁</span>
+                                <span class="action-icon" onclick="toggleComments('kruzhok','${k.id}')">💬</span>
+                            </div>
                         </div>
+                        <div class="author-info">@${k.authorName || k.author}</div>
+                        <div class="kruzhok-comments" id="comments-kruzhok-${k.id}" style="display:none;"></div>
                     </div>
-                    <div class="author-info">
-                        @${k.authorName || k.author}
-                        ${(currentUser && currentUser.login !== k.author) ? ` <button onclick="toggleSubscribe('${k.author}')" style="margin-left:8px; background:var(--gradient); color:white; border:none; border-radius:20px; padding:4px 16px;">${isSubscribed(k.author) ? t('unsubscribe') : t('subscribe')}</button>` : ''}
-                    </div>
-                    <div class="kruzhok-comments" id="comments-kruzhok-${k.id}" style="display:none;"></div>
-                </div>
-            `).join('');
-            initKruzhkiObserver();
+                `).join('');
+                initKruzhkiObserver();
+            } catch(e) { feed.innerHTML = '<div class="empty-placeholder" style="color:white;">Ошибка</div>'; }
         }
-
-        window.likeKruzhok = (id) => alert('Лайк (можно доработать)');
-        window.shareKruzhok = (id) => { navigator.clipboard.writeText(location.origin + '/kruzhok/' + id).then(() => alert('Ссылка скопирована!')); };
-        window.deleteKruzhok = async (id) => { if (confirm(t('deleteConfirm'))) { /* await api(...) */ loadAndRenderKruzhki(); } };
-
         let kruzhkiObserver;
         function initKruzhkiObserver() {
             if (kruzhkiObserver) kruzhkiObserver.disconnect();
@@ -550,35 +466,52 @@
             }, { threshold: 0.6 });
             slides.forEach(s => kruzhkiObserver.observe(s));
         }
+        window.shareKruzhok = (id) => {
+            navigator.clipboard.writeText(`${location.origin}/kruzhok/${id}`).then(() => alert('Ссылка скопирована'));
+        };
 
-        function renderCreatorMenu() {
+        // Создание
+        function renderCreator() {
             const container = document.getElementById('creator-menu');
             container.innerHTML = `
-                <h3 style="margin-bottom:20px;">Что вы хотите создать?</h3>
-                <button class="auth-btn primary" id="go-create-post" style="margin-bottom:12px;">📝 Новый пост</button>
-                <button class="auth-btn" id="go-create-kruzhok">🎥 Загрузить кружочек</button>
-                <button class="auth-btn" id="go-record-kruzhok" style="margin-top:12px;">🎤 Записать с камеры</button>
+                <button class="auth-btn primary" id="new-post-btn">📝 Новый пост</button>
+                <button class="auth-btn" id="new-kruzhok-btn">🎥 Загрузить кружочек</button>
+                <button class="auth-btn" id="record-kruzhok-btn">🎤 Записать с камеры</button>
             `;
-            document.getElementById('go-create-post').onclick = () => showPostForm();
-            document.getElementById('go-create-kruzhok').onclick = () => uploadKruzhokFile();
-            document.getElementById('go-record-kruzhok').onclick = () => recordKruzhok();
+            document.getElementById('new-post-btn').onclick = showPostForm;
+            document.getElementById('new-kruzhok-btn').onclick = () => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'video/*';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('author', currentUser.login);
+                    formData.append('video', file);
+                    try {
+                        await uploadFile('/api/kruzhki', formData);
+                        switchTab('kruzhki');
+                    } catch(err) { alert(err.message); }
+                };
+                input.click();
+            };
+            document.getElementById('record-kruzhok-btn').onclick = recordKruzhok;
         }
-
         function showPostForm() {
             const container = document.getElementById('creator-menu');
             container.innerHTML = `
-                <h3>Новый пост</h3>
                 <textarea id="new-post-text" placeholder="Что у вас нового?" style="width:100%; padding:12px; border-radius:14px; background:var(--surface); color:var(--text); border:1px solid var(--border); resize:vertical; margin-bottom:12px;"></textarea>
-                <input type="file" id="new-post-images" multiple accept="image/*" style="margin-bottom:12px; width:100%;">
+                <input type="file" id="new-post-images" multiple accept="image/*" style="margin-bottom:12px;">
                 <input type="text" id="new-post-video-urls" placeholder="Ссылки на видео (через запятую)" style="margin-bottom:12px; width:100%; padding:12px; border-radius:14px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
                 <button class="auth-btn primary" id="publish-post">Опубликовать</button>
-                <button class="auth-btn" id="cancel-post-form" style="margin-top:8px;">Назад</button>
+                <button class="auth-btn" id="cancel-post">Назад</button>
             `;
             document.getElementById('publish-post').onclick = async () => {
                 const text = document.getElementById('new-post-text').value.trim();
                 const imageFiles = document.getElementById('new-post-images').files;
                 const videoRaw = document.getElementById('new-post-video-urls').value.trim();
-                const videoUrls = videoRaw ? videoRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
+                const videoUrls = videoRaw ? videoRaw.split(',').map(s=>s.trim()).filter(Boolean) : [];
                 if (!text && !imageFiles.length && !videoUrls.length) return alert('Добавьте текст, фото или видео');
                 const formData = new FormData();
                 formData.append('user', currentUser.login);
@@ -588,29 +521,10 @@
                 try {
                     await uploadFile('/api/posts', formData);
                     switchTab('posts');
-                } catch (e) { alert(e.message); }
+                } catch(e) { alert(e.message); }
             };
-            document.getElementById('cancel-post-form').onclick = () => renderCreatorMenu();
+            document.getElementById('cancel-post').onclick = renderCreator;
         }
-
-        function uploadKruzhokFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'video/*';
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const formData = new FormData();
-                formData.append('author', currentUser.login);
-                formData.append('video', file);
-                try {
-                    await uploadFile('/api/kruzhki', formData);
-                    switchTab('kruzhki');
-                } catch (err) { alert('Ошибка загрузки: ' + err.message); }
-            };
-            input.click();
-        }
-
         async function recordKruzhok() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -622,39 +536,114 @@
                     const formData = new FormData();
                     formData.append('author', currentUser.login);
                     formData.append('video', blob, 'record.webm');
-                    uploadFile('/api/kruzhki', formData).then(() => switchTab('kruzhki')).catch(e => alert('Ошибка: '+e.message));
+                    uploadFile('/api/kruzhki', formData).then(() => switchTab('kruzhki')).catch(e => alert(e.message));
                     stream.getTracks().forEach(t => t.stop());
                 };
                 mediaRecorder.start();
                 alert('Запись идёт... Нажми "ОК", чтобы остановить');
-                setTimeout(() => {
-                    if (mediaRecorder.state === 'recording') mediaRecorder.stop();
-                }, 10000);
-            } catch (e) { alert('Нет доступа к камере'); }
+                setTimeout(() => { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); }, 10000);
+            } catch(e) { alert('Нет доступа к камере'); }
         }
 
-        async function renderProfile() {
+        // Подписки
+        let mySubscriptions = [];
+        async function loadSubscriptions() {
             if (!currentUser) return;
-            const user = await api('/api/user/' + currentUser.login);
-            const posts = await api('/api/posts');
-            const myPosts = posts.filter(p => p.user === currentUser.login);
-            const myKruzhki = await api('/api/kruzhki');
-            const myCircles = myKruzhki.filter(k => k.author === currentUser.login);
-            const subs = await api('/api/subscriptions/' + currentUser.login);
-            const container = document.getElementById('tab-profile');
-            container.innerHTML = `
-                <div style="text-align:center;padding:24px;">
-                    <div class="avatar" style="width:96px;height:96px;margin:0 auto;font-size:36px;">${user.avatar}</div>
-                    <h2 style="margin-top:16px;">${user.name}</h2>
-                    <p style="color:var(--text-secondary);">@${user.login}</p>
-                    <p style="margin:8px 0;">${user.desc||''}</p>
-                    <div style="display:flex; justify-content:center; gap:32px; margin:20px 0;">
-                        <div><strong>${subs.length}</strong><br>подписок</div>
-                        <div><strong>${myPosts.length}</strong><br>постов</div>
-                        <div><strong>${myCircles.length}</strong><br>кружков</div>
+            mySubscriptions = await api(`/api/subscriptions/${currentUser.login}`);
+        }
+        function isSubscribed(target) { return mySubscriptions.includes(target); }
+        window.toggleSubscribe = async (target) => {
+            if (!currentUser) return;
+            const sub = isSubscribed(target);
+            await api(sub ? '/api/unsubscribe' : '/api/subscribe', { method: 'POST', body: JSON.stringify({ subscriber: currentUser.login, target }) });
+            await loadSubscriptions();
+            loadPosts();
+            loadKruzhki();
+        };
+
+        // Уведомления
+        async function loadNotifications() {
+            const container = document.getElementById('notifications-list');
+            try {
+                const notifs = await api(`/api/notifications/${currentUser.login}`);
+                if (!notifs.length) {
+                    container.innerHTML = `<div class="empty-placeholder">${t('emptyNotifications')}</div>`;
+                    return;
+                }
+                container.innerHTML = notifs.map(n => `
+                    <div class="post-card" style="padding:12px;">
+                        <p>${n.text} <small>${new Date(n.createdAt).toLocaleString()}</small></p>
+                        ${!n.read ? `<button onclick="readNotif('${n.id}')" class="auth-btn primary" style="width:auto;padding:4px 10px;">OK</button>` : ''}
                     </div>
+                `).join('');
+            } catch(e) { container.innerHTML = '<div class="empty-placeholder">Ошибка</div>'; }
+        }
+        window.readNotif = async (id) => {
+            await api(`/api/notifications/read/${id}`, { method: 'POST' });
+            loadNotifications();
+        };
+
+        // Личные сообщения
+        async function loadMessages() {
+            const container = document.getElementById('messages-container');
+            // показать список диалогов
+            const mutuals = await loadFriends();
+            if (!mutuals.length) {
+                container.innerHTML = `<div class="empty-placeholder">${t('mutualOnly')}</div>`;
+                return;
+            }
+            container.innerHTML = mutuals.map(login => `
+                <div class="post-card" style="padding:12px; cursor:pointer;" onclick="openChat('${login}')">
+                    <strong>${login}</strong>
                 </div>
-                <div style="display:flex; gap:12px; justify-content:center; margin-bottom:16px;">
+            `).join('');
+        }
+        window.openChat = async (withLogin) => {
+            const messages = await api(`/api/messages/${currentUser.login}/${withLogin}`);
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>Чат с ${withLogin}</h3>
+                    <div id="chat-messages" style="max-height:200px; overflow-y:auto; margin:12px 0;">
+                        ${messages.map(m => `<div><strong>${m.from===currentUser.login?'Вы':m.from}:</strong> ${m.text}</div>`).join('')}
+                    </div>
+                    <input type="text" id="chat-input" placeholder="${t('sendMessage')}">
+                    <button class="auth-btn primary" id="send-chat">➤</button>
+                </div>`;
+            document.body.appendChild(modal);
+            document.getElementById('send-chat').onclick = async () => {
+                const text = document.getElementById('chat-input').value.trim();
+                if (!text) return;
+                await api('/api/messages', { method: 'POST', body: JSON.stringify({ from: currentUser.login, to: withLogin, text }) });
+                modal.remove();
+                window.openChat(withLogin);
+            };
+        };
+
+        // Профиль
+        async function renderProfile() {
+            const container = document.getElementById('tab-profile');
+            const user = await api(`/api/user/${currentUser.login}`);
+            const posts = (await api('/api/posts')).filter(p => p.user === currentUser.login);
+            const kruzhki = (await api('/api/kruzhki')).filter(k => k.author === currentUser.login);
+            const subs = await api(`/api/subscriptions/${currentUser.login}`);
+            container.innerHTML = `
+                <div style="text-align:center; padding:20px;">
+                    <div class="avatar" style="width:96px; height:96px; margin:0 auto; font-size:36px; overflow:hidden;">
+                        ${user.avatar?.startsWith('/uploads') ? `<img src="${API_BASE+user.avatar}" style="width:100%; height:100%; object-fit:cover;">` : user.avatar || '?'}
+                    </div>
+                    <h2>${user.name}</h2>
+                    <p>@${user.login}</p>
+                    <p>${user.desc||''}</p>
+                    <div style="display:flex; justify-content:center; gap:32px; margin:20px 0;">
+                        <div><strong>${subs.length}</strong> подписок</div>
+                        <div><strong>${posts.length}</strong> постов</div>
+                        <div><strong>${kruzhki.length}</strong> кружков</div>
+                    </div>
+                    <button class="auth-btn primary" onclick="uploadAvatar()">📷 Загрузить аватар</button>
+                </div>
+                <div class="tab-bar" style="display:flex; justify-content:center; gap:12px; margin-bottom:16px;">
                     <span class="tab active" data-profile-tab="circles" style="padding:8px 20px; background:var(--gradient); color:white; border-radius:20px; cursor:pointer;">Кружочки</span>
                     <span class="tab" data-profile-tab="posts" style="padding:8px 20px; background:var(--surface); border-radius:20px; cursor:pointer;">Посты</span>
                 </div>
@@ -664,11 +653,11 @@
             function showProfile(tab) {
                 grid.innerHTML = '';
                 if (tab === 'circles') {
-                    myCircles.forEach(() => {
+                    kruzhki.forEach(() => {
                         grid.innerHTML += `<div style="aspect-ratio:1/1; border-radius:50%; background:var(--gradient);"></div>`;
                     });
                 } else {
-                    myPosts.forEach(p => {
+                    posts.forEach(p => {
                         grid.innerHTML += p.images?.[0] ? `<img src="${API_BASE+p.images[0]}" style="width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px;">` : `<div style="background:var(--surface-light); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; border-radius:12px;">📄</div>`;
                     });
                 }
@@ -682,22 +671,44 @@
                 });
             });
         }
+        window.uploadAvatar = () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const formData = new FormData();
+                formData.append('login', currentUser.login);
+                formData.append('avatar', file);
+                await uploadFile('/api/user/avatar', formData);
+                renderProfile();
+            };
+            input.click();
+        };
 
+        // Настройки
         function renderSettings() {
             const container = document.getElementById('tab-settings');
             container.innerHTML = `
                 <div class="post-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;"><span>Язык</span>
-                        <select id="lang-settings"> <option value="ru" ${currentLang==='ru'?'selected':''}>Русский</option> <option value="en" ${currentLang==='en'?'selected':''}>English</option> </select>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Язык</span>
+                        <select id="lang-settings">
+                            <option value="ru" ${currentLang==='ru'?'selected':''}>Русский</option>
+                            <option value="en" ${currentLang==='en'?'selected':''}>English</option>
+                        </select>
                     </div>
                 </div>
                 <div class="post-card">
-                    <div style="display:flex; justify-content:space-between; align-items:center;"><span>Тема</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>Тема</span>
                         <button id="toggle-theme" class="auth-btn" style="width:120px;">${document.documentElement.classList.contains('light')?'Светлая':'Тёмная'}</button>
                     </div>
                 </div>
-                <button class="auth-btn" id="delete-account" style="color:var(--danger); margin-top:12px;">Удалить аккаунт</button>
-                <button class="auth-btn" id="logout-btn" style="margin-top:6px;">Выйти</button>
+                <button class="auth-btn" id="delete-account" style="color:var(--danger);">Удалить аккаунт</button>
+                <button class="auth-btn" id="logout-btn">Выйти</button>
+                ${isAdmin ? `<button class="auth-btn primary" id="open-admin">⚙️ Админ-панель</button>` : ''}
             `;
             document.getElementById('lang-settings').onchange = e => setLang(e.target.value);
             document.getElementById('toggle-theme').onclick = function() {
@@ -706,14 +717,31 @@
             };
             document.getElementById('delete-account').onclick = async () => {
                 if (confirm('Точно удалить?')) {
-                    await api('/api/user/' + currentUser.login, { method: 'DELETE' }).catch(()=>{});
+                    await api(`/api/user/${currentUser.login}`, { method: 'DELETE' }).catch(()=>{});
                     logout();
                 }
             };
             document.getElementById('logout-btn').onclick = logout;
+            if (document.getElementById('open-admin')) {
+                document.getElementById('open-admin').onclick = async () => {
+                    const stats = await api(`/api/admin/stats?adminLogin=${currentUser.login}`);
+                    document.getElementById('admin-stats').innerHTML = `
+                        <p>Пользователей: ${stats.users}</p>
+                        <p>Постов: ${stats.posts}</p>
+                        <p>Кружочков: ${stats.kruzhki}</p>
+                        <p>Сообщений: ${stats.messages}</p>
+                    `;
+                    document.getElementById('admin-delete-mode').checked = deleteMode;
+                    document.getElementById('admin-delete-mode').onchange = (e) => { deleteMode = e.target.checked; };
+                    document.getElementById('admin-modal').classList.remove('hidden');
+                };
+            }
         }
+        document.getElementById('close-admin').addEventListener('click', () => {
+            document.getElementById('admin-modal').classList.add('hidden');
+        });
 
-        // Инициализация событий авторизации
+        // Регистрация и вход
         document.getElementById('show-login-btn').onclick = () => showScreen('login-screen');
         document.getElementById('show-onboarding-btn').onclick = () => showScreen('onboarding-screen');
         document.getElementById('back-to-auth').onclick = () => showScreen('auth-screen');
@@ -726,23 +754,24 @@
             try {
                 const { user } = await api('/api/login', { method: 'POST', body: JSON.stringify({ login, password: pass }) });
                 login(user);
-            } catch (e) { alert(e.message); }
+            } catch(e) { alert(e.message); }
         };
         document.getElementById('register-submit').onclick = async () => {
             const name = document.getElementById('reg-name').value.trim();
             const login = document.getElementById('reg-login').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
             const pass = document.getElementById('reg-pass').value;
             const pass2 = document.getElementById('reg-pass2').value;
-            if (!name || !login || !pass) return alert('Заполните все поля');
+            if (!name || !login || !email || !pass) return alert('Заполните все поля');
             if (pass !== pass2) { document.getElementById('reg-error').style.display='block'; return; }
             try {
-                const { user } = await api('/api/register', { method: 'POST', body: JSON.stringify({ login, password: pass, name }) });
+                const { user } = await api('/api/register', { method: 'POST', body: JSON.stringify({ login, password: pass, name, email }) });
                 currentUser = user;
                 showScreen('profile-edit-screen');
                 renderAvatarChoices();
                 document.getElementById('profile-name').value = name;
                 document.getElementById('profile-desc').value = '';
-            } catch (e) { alert(e.message); }
+            } catch(e) { alert(e.message); }
         };
         function renderAvatarChoices() {
             const avatars = ['🐱','🐶','🦊','🐼','🐨','🐸','🐵','🐰'];
@@ -760,14 +789,26 @@
             window.getSelectedAvatar = () => selected;
         }
         document.getElementById('save-profile').onclick = async () => {
-            if (!currentUser) return;
-            const avatar = window.getSelectedAvatar?.() || currentUser.avatar;
-            const name = document.getElementById('profile-name').value.trim() || currentUser.name;
+            const name = document.getElementById('profile-name').value.trim();
             const desc = document.getElementById('profile-desc').value.trim();
-            currentUser.avatar = avatar;
-            currentUser.name = name;
-            currentUser.desc = desc;
-            localStorage.setItem('saper_user', currentUser.login);
+            const avatarFile = document.getElementById('avatar-file').files[0];
+            const emoji = window.getSelectedAvatar?.();
+            if (avatarFile) {
+                const formData = new FormData();
+                formData.append('login', currentUser.login);
+                formData.append('avatar', avatarFile);
+                await uploadFile('/api/user/avatar', formData);
+            } else if (emoji) {
+                await api(`/api/user/${currentUser.login}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ name, desc, avatarEmoji: emoji })
+                });
+            } else {
+                await api(`/api/user/${currentUser.login}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ name, desc })
+                });
+            }
             showScreen('app');
             switchTab('posts');
         };
