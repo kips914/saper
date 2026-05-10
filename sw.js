@@ -1,7 +1,10 @@
-const CACHE_NAME = 'saper-v1';
+const CACHE_NAME = 'saper-v2';
 const ASSETS = [
   '/saper/',
-  '/saper/index.html'
+  '/saper/index.html',
+  '/saper/manifest.json',
+  '/saper/icon-192.png',
+  '/saper/icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
