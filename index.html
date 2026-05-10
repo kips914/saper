@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
     <title>Сапёр – Социальная сеть</title>
+    <link rel="manifest" href="/saper/manifest.json">
+    <meta name="theme-color" content="#4f8cff">
     <style>
         :root {
             --bg: #0b0f15; --surface: #1a1f2b; --surface-light: #222836;
@@ -72,12 +74,21 @@
         .author-info { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.75); backdrop-filter:blur(10px); padding:8px 24px; border-radius:30px; color:white; font-weight:500; }
         .kruzhok-comments { position:absolute; bottom:80px; left:16px; right:16px; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); border-radius:20px; padding:14px; max-height:180px; overflow-y:auto; color:white; }
         .empty-placeholder { text-align:center; padding:40px; color:var(--text-secondary); }
+        .install-btn {
+            display:none; position:fixed; bottom:20px; right:20px;
+            background:var(--gradient); color:white; border:none; border-radius:50px;
+            padding:12px 24px; font-weight:600; font-size:16px;
+            box-shadow:0 4px 20px rgba(79,140,255,0.5); z-index:999;
+            transition:transform 0.2s, box-shadow 0.2s;
+        }
+        .install-btn:active { transform:scale(0.96); box-shadow:0 2px 10px rgba(79,140,255,0.3); }
         @media (max-width: 768px) {
             #sidebar { display:none; }
             #bottom-nav { display:flex; position:fixed; bottom:0; width:100%; background:var(--surface); border-top:1px solid var(--border); z-index:50; backdrop-filter:blur(20px); }
             .mobile-nav-item { flex:1; text-align:center; padding:12px; font-size:22px; cursor:pointer; }
             .post-card { margin:10px; }
             .right-actions { right:-32px; gap:20px; font-size:22px; }
+            .install-btn { display:block; }
         }
         @media (min-width: 769px) {
             #bottom-nav { display:none; }
@@ -87,7 +98,6 @@
     </style>
 </head>
 <body class="dark">
-    <!-- Экран авторизации -->
     <div id="auth-screen" class="screen active">
         <div style="margin-bottom:24px;">
             <select id="lang-select-auth" style="padding:8px 12px; border-radius:10px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
@@ -101,8 +111,6 @@
         <button class="auth-btn" id="show-onboarding-btn">Зарегистрироваться</button>
         <span class="auth-link" id="show-policy">Политика конфиденциальности</span>
     </div>
-
-    <!-- Форма входа -->
     <div id="login-screen" class="screen">
         <h2 style="margin-bottom:24px; font-size:28px;">Вход</h2>
         <div class="input-wrapper"><span class="icon">👤</span><input type="text" id="login-login" placeholder="Логин"></div>
@@ -110,8 +118,6 @@
         <button class="auth-btn primary" id="login-submit">Войти</button>
         <button class="auth-btn" id="back-to-auth">Назад</button>
     </div>
-
-    <!-- Онбординг -->
     <div id="onboarding-screen" class="screen">
         <h3>Что такое Сапёр?</h3>
         <div class="onb-slides">
@@ -123,8 +129,6 @@
         </div>
         <button class="auth-btn primary" id="open-register-form">Продолжить</button>
     </div>
-
-    <!-- Регистрация -->
     <div id="register-screen" class="screen">
         <h2 style="margin-bottom:24px; font-size:28px;">Регистрация</h2>
         <div class="input-wrapper"><span class="icon">✏️</span><input type="text" id="reg-name" placeholder="Имя"></div>
@@ -136,8 +140,6 @@
         <button class="auth-btn primary" id="register-submit">Зарегистрироваться</button>
         <button class="auth-btn" id="back-to-auth2">Назад</button>
     </div>
-
-    <!-- Редактирование профиля -->
     <div id="profile-edit-screen" class="screen">
         <h2>Заполните профиль</h2>
         <div id="avatar-choices" style="display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:16px 0;"></div>
@@ -146,8 +148,6 @@
         <div class="input-wrapper"><span class="icon">📝</span><textarea id="profile-desc" placeholder="О себе" style="height:80px; resize:none;"></textarea></div>
         <button class="auth-btn primary" id="save-profile">Сохранить</button>
     </div>
-
-    <!-- Основное приложение -->
     <div id="app">
         <div id="sidebar">
             <div class="logo" id="logo">⚡ Сапёр</div>
@@ -177,8 +177,7 @@
             <div class="mobile-nav-item" data-tab="profile">👤</div>
         </div>
     </div>
-
-    <!-- Политика -->
+    <button id="install-btn" class="install-btn">📲 Установить приложение</button>
     <div id="policy-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Политика конфиденциальности</h3>
@@ -186,8 +185,6 @@
             <button class="auth-btn" id="close-policy">Закрыть</button>
         </div>
     </div>
-
-    <!-- Админ-панель -->
     <div id="admin-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Панель администратора</h3>
@@ -196,10 +193,9 @@
             <button class="auth-btn" id="close-admin">Закрыть</button>
         </div>
     </div>
-
-    <script>
+        <script>
         // ---------- КОНФИГУРАЦИЯ ----------
-        const API_BASE = 'https://saper-server.onrender.com'; // ← ЗАМЕНИ
+        const API_BASE = 'https://render.com/docs/web-services#port-binding'; // ← ЗАМЕНИ НА СВОЙ URL
         let currentUser = null;
         let currentLang = localStorage.getItem('saper_lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
         let isAdmin = false;
@@ -299,7 +295,7 @@
             el.addEventListener('click', () => switchTab(el.dataset.tab));
         });
 
-        // Загрузка постов
+        // Загрузка постов (лайки toggle, удаление, отправка в ЛС)
         async function loadPosts() {
             const container = document.getElementById('tab-posts');
             try {
@@ -309,8 +305,8 @@
                     return;
                 }
                 container.innerHTML = posts.map(p => {
-                    const liked = p.likes > 0;
-                    const disliked = p.dislikes > 0;
+                    const liked = DB.likes?.[currentUser?.login]?.includes(p.id);
+                    const disliked = DB.dislikes?.[currentUser?.login]?.includes(p.id);
                     const isOwner = currentUser && currentUser.login === p.user;
                     return `
                     <div class="post-card">
@@ -353,7 +349,6 @@
             loadPosts();
         };
         window.shareToFriend = (postId) => {
-            // открыть модалку со списком друзей (взаимных подписок) и отправить пост в ЛС
             loadFriends().then(friends => {
                 if (!friends.length) return alert('Нет друзей для отправки');
                 const modal = document.createElement('div');
@@ -586,7 +581,6 @@
         // Личные сообщения
         async function loadMessages() {
             const container = document.getElementById('messages-container');
-            // показать список диалогов
             const mutuals = await loadFriends();
             if (!mutuals.length) {
                 container.innerHTML = `<div class="empty-placeholder">${t('mutualOnly')}</div>`;
@@ -816,6 +810,23 @@
         document.getElementById('show-policy').onclick = () => document.getElementById('policy-modal').classList.remove('hidden');
         document.getElementById('close-policy').onclick = () => document.getElementById('policy-modal').classList.add('hidden');
 
+        // Кнопка установки PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`Install outcome: ${outcome}`);
+            deferredPrompt = null;
+            installBtn.style.display = 'none';
+        });
+
         // Старт
         window.addEventListener('load', async () => {
             setLang(currentLang);
@@ -829,6 +840,13 @@
                 showScreen('auth-screen');
             }
         });
+
+        // Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/saper/sw.js').catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>
