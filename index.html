@@ -2,7 +2,7 @@
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Сапёр – Социальная сеть</title>
     <style>
         :root {
@@ -15,12 +15,10 @@
             --accent2: #7b5cff;
             --border: #2d3440;
             --danger: #ff4d6a;
-            --success: #2ed573;
             --circle-size: min(80vw, 360px);
             --gradient: linear-gradient(135deg, #4f8cff, #7b5cff);
             --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            --transition: 0.2s ease;
-            --radius: 16px;
+            --radius: 20px;
         }
         .light {
             --bg: #f4f6fa;
@@ -45,47 +43,53 @@
             justify-content: center;
             transition: background 0.3s;
         }
-        button, input, textarea, select {
-            font-family: inherit;
-            font-size: 16px;
-            transition: opacity 0.2s, transform 0.1s;
-        }
+        button, input, textarea, select { font-family: inherit; font-size: 16px; }
         button:active { transform: scale(0.97); }
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: inherit;
-        }
+        button { cursor: pointer; border: none; background: none; color: inherit; transition: transform 0.1s; }
         .hidden { display: none !important; }
 
-        /* Экраны */
         .screen {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 20px;
-            overflow-y: auto;
-            transition: opacity 0.3s;
+            position: fixed; inset: 0; background: var(--bg);
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; padding: 20px; overflow-y: auto;
         }
         .screen.active { display: flex; }
-        #app {
-            display: none;
-            height: 100vh;
-            width: 100%;
-            background: var(--bg);
-        }
+        #app { display: none; height: 100vh; width: 100%; background: var(--bg); }
         #app.active { display: flex; }
 
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 16px;
+        }
+        .input-wrapper .icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+        .input-wrapper input, .input-wrapper textarea {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 16px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .input-wrapper input:focus, .input-wrapper textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(79, 140, 255, 0.2);
+        }
         .auth-btn {
             width: 100%;
-            max-width: 280px;
-            padding: 14px;
+            max-width: 320px;
+            padding: 16px;
             border-radius: 14px;
             margin: 8px 0;
             background: var(--surface);
@@ -107,266 +111,160 @@
             cursor: pointer;
             text-decoration: none;
             font-weight: 500;
+            margin-top: 12px;
         }
 
-        /* Онбординг */
         .onb-slides {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 12px;
-            max-width: 320px;
-            margin-bottom: 24px;
+            display: flex; overflow-x: auto; scroll-snap-type: x mandatory;
+            gap: 12px; max-width: 320px; margin-bottom: 24px;
         }
         .onb-slide {
-            min-width: 100%;
-            scroll-snap-align: start;
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 32px 20px;
-            text-align: center;
-            font-weight: 600;
+            min-width: 100%; scroll-snap-align: start;
+            background: var(--surface); border-radius: 20px;
+            padding: 32px 20px; text-align: center; font-weight: 600;
             box-shadow: var(--card-shadow);
         }
 
-        /* Сайдбар */
         #sidebar {
-            width: 260px;
-            background: var(--surface);
-            display: flex;
-            flex-direction: column;
-            padding: 24px 0;
+            width: 260px; background: var(--surface); display: flex;
+            flex-direction: column; padding: 24px 0;
             border-right: 1px solid var(--border);
-            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
         }
         .logo {
-            font-size: 28px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 32px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 28px; font-weight: 700; text-align: center; margin-bottom: 32px;
+            background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             cursor: pointer;
         }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 24px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 14px; padding: 14px 24px;
+            cursor: pointer; font-weight: 500;
         }
         .nav-item:hover, .nav-item.active {
-            background: var(--surface-light);
-            border-radius: 12px;
-            margin: 0 10px;
+            background: var(--surface-light); border-radius: 12px; margin: 0 10px;
         }
 
-        /* Контент */
-        .tab-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: none;
-        }
+        .tab-content { flex: 1; overflow-y: auto; padding: 20px; display: none; }
         .tab-content.active { display: block; }
 
         .post-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid var(--border);
-            max-width: 600px;
-            margin-inline: auto;
-            box-shadow: var(--card-shadow);
+            background: var(--surface); border-radius: var(--radius); padding: 20px;
+            margin-bottom: 16px; border: 1px solid var(--border);
+            max-width: 600px; margin-inline: auto; box-shadow: var(--card-shadow);
         }
         .post-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;
         }
         .avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--gradient); display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 20px;
         }
-        .post-text {
-            margin: 12px 0;
-            line-height: 1.6;
-            color: var(--text);
-        }
-        .post-media {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 12px 0;
-        }
+        .post-text { margin: 12px 0; line-height: 1.6; }
+        .post-media { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
         .post-media img, .post-media video {
-            width: 130px;
-            height: 130px;
-            object-fit: cover;
-            border-radius: 12px;
-            transition: transform 0.2s;
+            width: 130px; height: 130px; object-fit: cover; border-radius: 12px;
         }
-        .post-media img:hover { transform: scale(1.02); }
-
         .post-actions {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            color: var(--text-secondary);
-            margin-top: 14px;
-            font-size: 15px;
+            display: flex; align-items: center; gap: 24px; color: var(--text-secondary);
+            margin-top: 14px; font-size: 15px;
         }
         .action-btn { cursor: pointer; transition: color 0.2s; }
         .action-btn:hover { color: var(--accent); }
 
         .comments-section {
-            margin-top: 18px;
-            border-top: 1px solid var(--border);
-            padding-top: 14px;
+            margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px;
         }
-        .comment {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-            padding: 6px 0;
-        }
-        .comment-input {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
+        .comment { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; padding: 6px 0; }
+        .comment-input { display: flex; gap: 8px; margin-top: 12px; }
         .comment-input input {
-            flex: 1;
-            padding: 10px 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--bg);
-            color: var(--text);
+            flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
+            background: var(--bg); color: var(--text);
         }
 
-        /* Кружочки */
-       // Кружочки
-async function loadAndRenderKruzhki() {
-    const kruzhki = await api('/api/kruzhki');
-    const feed = document.getElementById('kruzhki-feed');
-    feed.innerHTML = kruzhki.map(k => `
-        <div class="kruzhok-slide">
-            <div class="circle-container">
-                <svg class="progress-ring" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="46" pathLength="1000"/>
-                    <circle class="progress" cx="50" cy="50" r="46" pathLength="1000"/>
-                </svg>
-                <div class="video-circle">
-                    <video src="${API_BASE + k.src}" loop playsinline muted></video>
-                </div>
-                <div class="right-actions">
-                    <span class="action-icon" onclick="likeKruzhok('${k.id}')">❤️</span>
-                    <span class="action-icon" onclick="shareKruzhok('${k.id}')">🔁</span>
-                    <span class="action-icon" onclick="toggleComments('kruzhok','${k.id}')">💬</span>
-                    ${currentUser?.login === k.author ? `<span class="action-icon" onclick="deleteKruzhok('${k.id}')" style="color:var(--danger)">🗑️</span>` : ''}
-                </div>
-            </div>
-            <div class="author-info">
-                @${k.authorName || k.author}
-                ${(currentUser && currentUser.login !== k.author) ? ` <button onclick="toggleSubscribe('${k.author}')" style="margin-left:8px; background:var(--gradient); color:white; border:none; border-radius:20px; padding:4px 16px;">${isSubscribed(k.author) ? t('unsubscribe') : t('subscribe')}</button>` : ''}
-            </div>
-            <div class="kruzhok-comments" id="comments-kruzhok-${k.id}" style="display:none;"></div>
-        </div>
-    `).join('');
-    initKruzhkiObserver();
-}
-          
-     
-         
-        /* Адаптив */
+        #kruzhki-feed { height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory; background: #000; }
+        .kruzhok-slide {
+            scroll-snap-align: start; display: flex; align-items: center; justify-content: center;
+            height: 100vh; position: relative; flex-direction: column;
+        }
+        .circle-container {
+            position: relative; width: var(--circle-size); height: var(--circle-size);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .progress-ring { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .progress-ring circle { fill: none; stroke: rgba(255,255,255,0.2); stroke-width: 4; }
+        .progress-ring .progress { stroke: var(--accent); }
+        .video-circle {
+            width: 88%; height: 88%; border-radius: 50%; overflow: hidden;
+            box-shadow: 0 0 30px rgba(79,140,255,0.3);
+        }
+        .video-circle video { width: 100%; height: 100%; object-fit: cover; }
+        .right-actions {
+            position: absolute; right: -48px; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 28px; color: white; font-size: 26px;
+        }
+        .right-actions .action-icon { cursor: pointer; transition: transform 0.1s; }
+        .right-actions .action-icon:active { transform: scale(0.8); }
+        .author-info {
+            position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); padding: 8px 24px;
+            border-radius: 30px; color: white; font-weight: 500;
+        }
+        .kruzhok-comments {
+            position: absolute; bottom: 80px; left: 16px; right: 16px;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); border-radius: 20px;
+            padding: 14px; max-height: 180px; overflow-y: auto; color: white;
+        }
+
         @media (max-width: 768px) {
             #sidebar { display: none; }
             #bottom-nav {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                width: 100%;
-                background: var(--surface);
-                border-top: 1px solid var(--border);
-                z-index: 50;
+                display: flex; position: fixed; bottom: 0; width: 100%;
+                background: var(--surface); border-top: 1px solid var(--border); z-index: 50;
                 backdrop-filter: blur(20px);
             }
-            .mobile-nav-item {
-                flex: 1;
-                text-align: center;
-                padding: 12px;
-                font-size: 22px;
-                cursor: pointer;
-            }
+            .mobile-nav-item { flex: 1; text-align: center; padding: 12px; font-size: 22px; cursor: pointer; }
             .post-card { margin: 10px; }
             .right-actions { right: -32px; gap: 20px; font-size: 22px; }
         }
         @media (min-width: 769px) {
             #bottom-nav { display: none; }
         }
-
         .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-            padding: 20px;
+            position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+            display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px;
         }
         .modal-content {
-            background: var(--surface);
-            border-radius: 20px;
-            padding: 24px;
-            max-height: 80vh;
-            overflow-y: auto;
-            color: var(--text);
-            max-width: 500px;
-            width: 100%;
+            background: var(--surface); border-radius: 20px; padding: 24px;
+            max-height: 80vh; overflow-y: auto; color: var(--text); max-width: 500px; width: 100%;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
     </style>
 </head>
 <body class="dark">
-    <!-- Экраны авторизации (без изменений в разметке, но добавим иконки) -->
     <div id="auth-screen" class="screen active">
-        <div style="margin-bottom:20px;">
-            <select id="lang-select-auth" style="padding:8px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
+        <div style="margin-bottom:24px;">
+            <select id="lang-select-auth" style="padding:8px 12px; border-radius:10px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
                 <option value="ru">🇷🇺 Русский</option>
                 <option value="en">🇬🇧 English</option>
             </select>
         </div>
         <h1 style="font-size:48px; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px;">⚡ Сапёр</h1>
-        <p style="color:var(--text-secondary); margin-bottom:24px;">Социальная сеть нового поколения</p>
-        <button class="auth-btn primary" id="show-login-btn" data-i18n="loginBtn">Войти</button>
-        <button class="auth-btn" id="show-onboarding-btn" data-i18n="registerBtn">Зарегистрироваться</button>
-        <span class="auth-link" id="show-policy" data-i18n="privacyPolicy">Политика конфиденциальности</span>
+        <p style="color:var(--text-secondary); margin-bottom:32px;">Твоя новая соцсеть</p>
+        <button class="auth-btn primary" id="show-login-btn">Войти</button>
+        <button class="auth-btn" id="show-onboarding-btn">Зарегистрироваться</button>
+        <span class="auth-link" id="show-policy">Политика конфиденциальности</span>
     </div>
 
     <div id="login-screen" class="screen">
-        <h2 data-i18n="loginTitle" style="margin-bottom:20px;">Вход</h2>
-        <input type="text" id="login-login" placeholder="Логин" style="margin-bottom:12px;">
-        <input type="password" id="login-pass" placeholder="Пароль">
-        <button class="auth-btn primary" id="login-submit" data-i18n="loginBtn" style="margin-top:12px;">Войти</button>
-        <button class="auth-btn" id="back-to-auth" data-i18n="back" style="margin-top:6px;">Назад</button>
+        <h2 style="margin-bottom:24px; font-size:28px;">Вход</h2>
+        <div class="input-wrapper"><span class="icon">👤</span><input type="text" id="login-login" placeholder="Логин"></div>
+        <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="login-pass" placeholder="Пароль"></div>
+        <button class="auth-btn primary" id="login-submit" style="margin-top:8px;">Войти</button>
+        <button class="auth-btn" id="back-to-auth" style="margin-top:12px;">Назад</button>
     </div>
 
     <div id="onboarding-screen" class="screen">
-        <h3 data-i18n="onboardingTitle" style="margin-bottom:16px;">Что такое Сапёр?</h3>
+        <h3 style="margin-bottom:16px;">Что такое Сапёр?</h3>
         <div class="onb-slides">
             <div class="onb-slide">📝 Текстовые посты</div>
             <div class="onb-slide">🎥 Кружочки с вертикальным скроллом</div>
@@ -374,29 +272,28 @@ async function loadAndRenderKruzhki() {
             <div class="onb-slide">🌐 Темы и языки</div>
             <div class="onb-slide">🔒 Конфиденциальность</div>
         </div>
-        <button class="auth-btn primary" id="open-register-form" data-i18n="continue">Продолжить регистрацию</button>
+        <button class="auth-btn primary" id="open-register-form">Продолжить регистрацию</button>
     </div>
 
     <div id="register-screen" class="screen">
-        <h2 data-i18n="registerTitle" style="margin-bottom:16px;">Регистрация</h2>
-        <input type="text" id="reg-name" placeholder="Имя">
-        <input type="text" id="reg-login" placeholder="Логин">
-        <input type="password" id="reg-pass" placeholder="Пароль">
-        <input type="password" id="reg-pass2" placeholder="Повторите пароль">
-        <p id="reg-error" style="color:var(--danger);display:none;">Пароли не совпадают</p>
-        <button class="auth-btn primary" id="register-submit" data-i18n="registerBtn" style="margin-top:12px;">Зарегистрироваться</button>
-        <button class="auth-btn" id="back-to-auth2" data-i18n="back">Назад</button>
+        <h2 style="margin-bottom:24px; font-size:28px;">Регистрация</h2>
+        <div class="input-wrapper"><span class="icon">✏️</span><input type="text" id="reg-name" placeholder="Имя"></div>
+        <div class="input-wrapper"><span class="icon">👤</span><input type="text" id="reg-login" placeholder="Логин"></div>
+        <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="reg-pass" placeholder="Пароль"></div>
+        <div class="input-wrapper"><span class="icon">🔒</span><input type="password" id="reg-pass2" placeholder="Повторите пароль"></div>
+        <p id="reg-error" style="color:var(--danger);display:none;margin-bottom:12px;">Пароли не совпадают</p>
+        <button class="auth-btn primary" id="register-submit">Зарегистрироваться</button>
+        <button class="auth-btn" id="back-to-auth2" style="margin-top:12px;">Назад</button>
     </div>
 
     <div id="profile-edit-screen" class="screen">
-        <h2 data-i18n="editProfile" style="margin-bottom:16px;">Заполните профиль</h2>
-        <div class="profile-edit-avatar" id="avatar-choices" style="margin-bottom:16px;"></div>
-        <input type="text" id="profile-name" placeholder="Имя">
-        <textarea id="profile-desc" placeholder="О себе" style="margin-top:8px;"></textarea>
-        <button class="auth-btn primary" id="save-profile" data-i18n="save" style="margin-top:12px;">Сохранить</button>
+        <h2 style="margin-bottom:20px;">Заполните профиль</h2>
+        <div class="profile-edit-avatar" id="avatar-choices"></div>
+        <div class="input-wrapper"><span class="icon">✏️</span><input type="text" id="profile-name" placeholder="Имя"></div>
+        <div class="input-wrapper"><span class="icon">📝</span><textarea id="profile-desc" placeholder="О себе" style="height:80px; resize:none;"></textarea></div>
+        <button class="auth-btn primary" id="save-profile">Сохранить</button>
     </div>
 
-    <!-- Основное приложение (разметка как раньше) -->
     <div id="app">
         <div id="sidebar">
             <div class="logo" id="logo">⚡ Сапёр</div>
@@ -425,17 +322,17 @@ async function loadAndRenderKruzhki() {
     <div id="policy-modal" class="modal hidden">
         <div class="modal-content">
             <h3>Политика конфиденциальности «Сапёр»</h3>
-            <p>Ваши данные защищены...</p>
+            <p>Ваши данные защищены и не передаются третьим лицам. Подробнее...</p>
             <button class="auth-btn" id="close-policy">Закрыть</button>
         </div>
     </div>
+
     <script>
         // ---------- КОНФИГУРАЦИЯ ----------
         const API_BASE = 'https://saper-server.onrender.com'; // ← ЗАМЕНИ НА СВОЙ RENDER URL
         let currentUser = null;
         let currentLang = localStorage.getItem('saper_lang') || (navigator.language.startsWith('ru') ? 'ru' : 'en');
 
-        // Мультиязычность
         const i18n = {
             ru: {
                 loginBtn: 'Войти', registerBtn: 'Зарегистрироваться', back: 'Назад',
@@ -445,9 +342,7 @@ async function loadAndRenderKruzhki() {
                 postsTab: 'Посты', kruzhkiTab: 'Кружочки', createTab: 'Создать', profileTab: 'Профиль', settingsTab: 'Настройки',
                 subscribe: 'Подписаться', unsubscribe: 'Отписаться',
                 comment: 'Комментарий', writeComment: 'Написать комментарий...',
-                like: 'Нравится', share: 'Поделиться',
-                deleteConfirm: 'Удалить?',
-                lang: 'Язык', theme: 'Тема', deleteAccount: 'Удалить аккаунт', logout: 'Выйти'
+                deleteConfirm: 'Удалить?', lang: 'Язык', theme: 'Тема', deleteAccount: 'Удалить аккаунт', logout: 'Выйти'
             },
             en: {
                 loginBtn: 'Login', registerBtn: 'Register', back: 'Back',
@@ -457,9 +352,7 @@ async function loadAndRenderKruzhki() {
                 postsTab: 'Posts', kruzhkiTab: 'Circles', createTab: 'Create', profileTab: 'Profile', settingsTab: 'Settings',
                 subscribe: 'Subscribe', unsubscribe: 'Unsubscribe',
                 comment: 'Comment', writeComment: 'Write a comment...',
-                like: 'Like', share: 'Share',
-                deleteConfirm: 'Delete?',
-                lang: 'Language', theme: 'Theme', deleteAccount: 'Delete account', logout: 'Log out'
+                deleteConfirm: 'Delete?', lang: 'Language', theme: 'Theme', deleteAccount: 'Delete account', logout: 'Log out'
             }
         };
 
@@ -474,7 +367,6 @@ async function loadAndRenderKruzhki() {
         document.getElementById('lang-select-auth').value = currentLang;
         document.getElementById('lang-select-auth').addEventListener('change', e => setLang(e.target.value));
 
-        // API
         async function api(path, options = {}) {
             const res = await fetch(API_BASE + path, {
                 headers: { 'Content-Type': 'application/json' },
@@ -491,7 +383,6 @@ async function loadAndRenderKruzhki() {
             return data;
         }
 
-        // Экраны
         function showScreen(id) {
             document.querySelectorAll('.screen, #app').forEach(el => el.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -527,7 +418,6 @@ async function loadAndRenderKruzhki() {
             item.addEventListener('click', () => switchTab(item.dataset.tab));
         });
 
-        // Подписки
         let mySubscriptions = [];
         async function loadSubscriptions() {
             if (!currentUser) return;
@@ -544,7 +434,6 @@ async function loadAndRenderKruzhki() {
             if (activeTab === 'profile') renderProfile();
         };
 
-        // Посты
         async function loadAndRenderPosts() {
             await loadSubscriptions();
             const posts = await api('/api/posts');
@@ -552,17 +441,14 @@ async function loadAndRenderKruzhki() {
             container.innerHTML = posts.map(p => {
                 const date = new Date(p.createdAt).toLocaleString(currentLang === 'ru' ? 'ru' : 'en');
                 return `
-                <div class="post-card" data-id="${p.id}">
+                <div class="post-card">
                     <div class="post-header">
                         <div class="avatar">${p.author?.avatar || '?'}</div>
-                        <div style="flex:1">
-                            <strong>${p.author?.name || p.user}</strong> @${p.user}<br>
-                            <small style="color:var(--text-secondary)">${date}</small>
-                        </div>
+                        <div><strong>${p.author?.name || p.user}</strong> @${p.user}<br><small>${date}</small></div>
                         ${(currentUser && currentUser.login !== p.user) ? `<button onclick="toggleSubscribe('${p.user}')" class="auth-btn primary" style="width:auto; padding:6px 14px; font-size:13px; border-radius:20px;">${isSubscribed(p.user) ? t('unsubscribe') : t('subscribe')}</button>` : ''}
                     </div>
                     <div class="post-text">${p.text}</div>
-                    ${(p.images?.length || p.videoUrls?.length) ? `<div class="post-media">${(p.images||[]).map(i => `<img src="${API_BASE+i}" onerror="this.style.display='none'" loading="lazy">`).join('')}${(p.videoUrls||[]).map(v => `<video src="${v}" controls width="130"></video>`).join('')}</div>` : ''}
+                    ${(p.images?.length || p.videoUrls?.length) ? `<div class="post-media">${(p.images||[]).map(i => `<img src="${API_BASE+i}" onerror="this.style.display='none'">`).join('')}${(p.videoUrls||[]).map(v => `<video src="${v}" controls width="130"></video>`).join('')}</div>` : ''}
                     <div class="post-actions">
                         <span class="action-btn" onclick="likePost('${p.id}')">👍 ${p.likes}</span>
                         <span class="action-btn" onclick="dislikePost('${p.id}')">👎 ${p.dislikes}</span>
@@ -576,33 +462,29 @@ async function loadAndRenderKruzhki() {
             setLang(currentLang);
         }
 
-        window.likePost = async (id) => { await api('/api/posts/' + id + '/like', { method: 'POST' }); loadAndRenderPosts(); };
-        window.dislikePost = async (id) => { await api('/api/posts/' + id + '/dislike', { method: 'POST' }); loadAndRenderPosts(); };
+        window.likePost = async (id) => {
+            try { await api('/api/posts/' + id + '/like', { method: 'POST' }); } catch(e) { alert('Ошибка: ' + e.message); }
+            loadAndRenderPosts();
+        };
+        window.dislikePost = async (id) => {
+            try { await api('/api/posts/' + id + '/dislike', { method: 'POST' }); } catch(e) { alert('Ошибка: ' + e.message); }
+            loadAndRenderPosts();
+        };
         window.sharePost = (id) => { navigator.clipboard.writeText(location.origin + '/post/' + id).then(() => alert('Ссылка скопирована!')); };
         window.deletePost = async (id) => { if (confirm(t('deleteConfirm'))) { await api('/api/posts/' + id, { method: 'DELETE' }); loadAndRenderPosts(); } };
 
-        // Комментарии
         window.toggleComments = async (type, parentId) => {
             const container = document.getElementById(`comments-${type}-${parentId}`);
             if (!container) return;
             if (container.style.display === 'none' || !container.style.display) {
                 const comments = await api(`/api/comments/${type}/${parentId}`);
                 container.innerHTML = comments.map(c => `
-                    <div class="comment">
-                        <div><strong>${c.user}</strong> ${c.text}</div>
-                        ${currentUser?.login === c.user ? `<span onclick="deleteComment('${c.id}','${type}','${parentId}')" style="cursor:pointer; color:var(--danger)">✕</span>` : ''}
-                    </div>
+                    <div class="comment"><div><strong>${c.user}</strong> ${c.text}</div>${currentUser?.login === c.user ? `<span onclick="deleteComment('${c.id}','${type}','${parentId}')" style="cursor:pointer; color:var(--danger)">✕</span>` : ''}</div>
                 `).join('') + `
-                <div class="comment-input">
-                    <input type="text" id="comment-input-${type}-${parentId}" placeholder="${t('writeComment')}">
-                    <button onclick="addComment('${type}','${parentId}')" class="auth-btn primary" style="width:48px;height:48px;border-radius:14px;">➤</button>
-                </div>`;
+                <div class="comment-input"><input type="text" id="comment-input-${type}-${parentId}" placeholder="${t('writeComment')}"><button onclick="addComment('${type}','${parentId}')" class="auth-btn primary" style="width:48px;height:48px;border-radius:14px;">➤</button></div>`;
                 container.style.display = 'block';
-            } else {
-                container.style.display = 'none';
-            }
+            } else container.style.display = 'none';
         };
-
         window.addComment = async (type, parentId) => {
             const input = document.getElementById(`comment-input-${type}-${parentId}`);
             const text = input.value.trim();
@@ -611,14 +493,14 @@ async function loadAndRenderKruzhki() {
             input.value = '';
             toggleComments(type, parentId);
         };
-
         window.deleteComment = async (id, type, parentId) => {
             if (confirm(t('deleteConfirm'))) {
                 await api('/api/comments/' + id, { method: 'DELETE' });
                 toggleComments(type, parentId);
             }
         };
-        // Кружочки
+
+        // Кружочки – исправленная версия
         async function loadAndRenderKruzhki() {
             const kruzhki = await api('/api/kruzhki');
             const feed = document.getElementById('kruzhki-feed');
@@ -629,9 +511,7 @@ async function loadAndRenderKruzhki() {
                             <circle cx="50" cy="50" r="46" pathLength="1000"/>
                             <circle class="progress" cx="50" cy="50" r="46" pathLength="1000"/>
                         </svg>
-                        <div class="video-circle">
-                            <video src="${API_BASE + k.src}" loop playsinline muted></video>
-                        </div>
+                        <div class="video-circle"><video src="${API_BASE + k.src}" loop playsinline muted></video></div>
                         <div class="right-actions">
                             <span class="action-icon" onclick="likeKruzhok('${k.id}')">❤️</span>
                             <span class="action-icon" onclick="shareKruzhok('${k.id}')">🔁</span>
@@ -651,7 +531,7 @@ async function loadAndRenderKruzhki() {
 
         window.likeKruzhok = (id) => alert('Лайк (можно доработать)');
         window.shareKruzhok = (id) => { navigator.clipboard.writeText(location.origin + '/kruzhok/' + id).then(() => alert('Ссылка скопирована!')); };
-        window.deleteKruzhok = async (id) => { if (confirm(t('deleteConfirm'))) { /* await api('/api/kruzhki/'+id, {method:'DELETE'}) */ loadAndRenderKruzhki(); } };
+        window.deleteKruzhok = async (id) => { if (confirm(t('deleteConfirm'))) { /* await api(...) */ loadAndRenderKruzhki(); } };
 
         let kruzhkiObserver;
         function initKruzhkiObserver() {
@@ -671,15 +551,28 @@ async function loadAndRenderKruzhki() {
             slides.forEach(s => kruzhkiObserver.observe(s));
         }
 
-        // Создание поста
         function renderCreatorMenu() {
             const container = document.getElementById('creator-menu');
             container.innerHTML = `
-                <h3 style="margin-bottom:16px;">Создать пост</h3>
-                <textarea id="new-post-text" placeholder="Что у вас нового?" style="margin-bottom:12px; width:100%; padding:12px; border-radius:14px; background:var(--surface); color:var(--text); border:1px solid var(--border); resize:vertical;"></textarea>
-                <input type="file" id="new-post-images" multiple accept="image/*" style="margin-bottom:12px; width:100%; color:var(--text-secondary);">
-                <input type="text" id="new-post-video-urls" placeholder="Ссылки на видео (через запятую)" style="margin-bottom:12px;">
+                <h3 style="margin-bottom:20px;">Что вы хотите создать?</h3>
+                <button class="auth-btn primary" id="go-create-post" style="margin-bottom:12px;">📝 Новый пост</button>
+                <button class="auth-btn" id="go-create-kruzhok">🎥 Загрузить кружочек</button>
+                <button class="auth-btn" id="go-record-kruzhok" style="margin-top:12px;">🎤 Записать с камеры</button>
+            `;
+            document.getElementById('go-create-post').onclick = () => showPostForm();
+            document.getElementById('go-create-kruzhok').onclick = () => uploadKruzhokFile();
+            document.getElementById('go-record-kruzhok').onclick = () => recordKruzhok();
+        }
+
+        function showPostForm() {
+            const container = document.getElementById('creator-menu');
+            container.innerHTML = `
+                <h3>Новый пост</h3>
+                <textarea id="new-post-text" placeholder="Что у вас нового?" style="width:100%; padding:12px; border-radius:14px; background:var(--surface); color:var(--text); border:1px solid var(--border); resize:vertical; margin-bottom:12px;"></textarea>
+                <input type="file" id="new-post-images" multiple accept="image/*" style="margin-bottom:12px; width:100%;">
+                <input type="text" id="new-post-video-urls" placeholder="Ссылки на видео (через запятую)" style="margin-bottom:12px; width:100%; padding:12px; border-radius:14px; background:var(--surface); color:var(--text); border:1px solid var(--border);">
                 <button class="auth-btn primary" id="publish-post">Опубликовать</button>
+                <button class="auth-btn" id="cancel-post-form" style="margin-top:8px;">Назад</button>
             `;
             document.getElementById('publish-post').onclick = async () => {
                 const text = document.getElementById('new-post-text').value.trim();
@@ -697,9 +590,49 @@ async function loadAndRenderKruzhki() {
                     switchTab('posts');
                 } catch (e) { alert(e.message); }
             };
+            document.getElementById('cancel-post-form').onclick = () => renderCreatorMenu();
         }
 
-        // Профиль
+        function uploadKruzhokFile() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'video/*';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const formData = new FormData();
+                formData.append('author', currentUser.login);
+                formData.append('video', file);
+                try {
+                    await uploadFile('/api/kruzhki', formData);
+                    switchTab('kruzhki');
+                } catch (err) { alert('Ошибка загрузки: ' + err.message); }
+            };
+            input.click();
+        }
+
+        async function recordKruzhok() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const mediaRecorder = new MediaRecorder(stream);
+                const chunks = [];
+                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const formData = new FormData();
+                    formData.append('author', currentUser.login);
+                    formData.append('video', blob, 'record.webm');
+                    uploadFile('/api/kruzhki', formData).then(() => switchTab('kruzhki')).catch(e => alert('Ошибка: '+e.message));
+                    stream.getTracks().forEach(t => t.stop());
+                };
+                mediaRecorder.start();
+                alert('Запись идёт... Нажми "ОК", чтобы остановить');
+                setTimeout(() => {
+                    if (mediaRecorder.state === 'recording') mediaRecorder.stop();
+                }, 10000);
+            } catch (e) { alert('Нет доступа к камере'); }
+        }
+
         async function renderProfile() {
             if (!currentUser) return;
             const user = await api('/api/user/' + currentUser.login);
@@ -750,7 +683,6 @@ async function loadAndRenderKruzhki() {
             });
         }
 
-        // Настройки
         function renderSettings() {
             const container = document.getElementById('tab-settings');
             container.innerHTML = `
